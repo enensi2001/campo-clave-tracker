@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
 import { Route as AuthenticatedContactosRouteImport } from './routes/_authenticated/contactos'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
+import { Route as AuthenticatedPipelineRouteImport } from './routes/_authenticated/pipeline'
 import { Route as AuthenticatedEmpresasIndexRouteImport } from './routes/_authenticated/empresas.index'
 import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
 
@@ -47,6 +48,11 @@ const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
   path: '/inicio',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPipelineRoute = AuthenticatedPipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEmpresasIndexRoute =
   AuthenticatedEmpresasIndexRouteImport.update({
     id: '/empresas/',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
   '/inicio': typeof AuthenticatedInicioRoute
+  '/pipeline': typeof AuthenticatedPipelineRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/': typeof AuthenticatedEmpresasIndexRoute
 }
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
   '/inicio': typeof AuthenticatedInicioRoute
+  '/pipeline': typeof AuthenticatedPipelineRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas': typeof AuthenticatedEmpresasIndexRoute
 }
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/_authenticated/campo': typeof AuthenticatedCampoRoute
   '/_authenticated/contactos': typeof AuthenticatedContactosRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/pipeline': typeof AuthenticatedPipelineRoute
   '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/_authenticated/empresas/': typeof AuthenticatedEmpresasIndexRoute
 }
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/campo'
     | '/contactos'
     | '/inicio'
+    | '/pipeline'
     | '/empresas/$id'
     | '/empresas/'
   fileRoutesByTo: FileRoutesByTo
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/campo'
     | '/contactos'
     | '/inicio'
+    | '/pipeline'
     | '/empresas/$id'
     | '/empresas'
   id:
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/_authenticated/campo'
     | '/_authenticated/contactos'
     | '/_authenticated/inicio'
+    | '/_authenticated/pipeline'
     | '/_authenticated/empresas/$id'
     | '/_authenticated/empresas/'
   fileRoutesById: FileRoutesById
@@ -169,6 +181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInicioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pipeline': {
+      id: '/_authenticated/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof AuthenticatedPipelineRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/empresas/': {
       id: '/_authenticated/empresas/'
       path: '/empresas'
@@ -190,6 +209,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
   AuthenticatedContactosRoute: typeof AuthenticatedContactosRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedPipelineRoute: typeof AuthenticatedPipelineRoute
   AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
   AuthenticatedEmpresasIndexRoute: typeof AuthenticatedEmpresasIndexRoute
 }
@@ -198,6 +218,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampoRoute: AuthenticatedCampoRoute,
   AuthenticatedContactosRoute: AuthenticatedContactosRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedPipelineRoute: AuthenticatedPipelineRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasIndexRoute: AuthenticatedEmpresasIndexRoute,
 }

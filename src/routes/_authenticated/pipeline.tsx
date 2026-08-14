@@ -25,7 +25,7 @@ function Pipeline() {
   const datos = useCrm();
   const dialogos = useDialogos();
   const resumen = calcularPipeline(datos);
-  const etapas = ETAPAS_OPORTUNIDAD.map((e) => (typeof e === "string" ? e : e.valor ?? String(e)));
+  const etapas = ETAPAS_OPORTUNIDAD.map((e) => String(e));
 
   return (
     <>
@@ -68,7 +68,7 @@ function Pipeline() {
                         <Chip icono={false}>{dinero(o.valor_estimado, o.moneda)}</Chip>
                         <Chip nivel="info" icono={false}>{o.probabilidad}%</Chip>
                         {esOportunidadAbierta(o) ? (
-                          <SeguimientoChip fecha={o.fecha_cierre_estimada} etiqueta="cierre" />
+                          <SeguimientoChip fecha={o.fecha_estimada_cierre} etiqueta="cierre" />
                         ) : null}
                       </div>
                       <div className="mt-2 flex gap-2">
