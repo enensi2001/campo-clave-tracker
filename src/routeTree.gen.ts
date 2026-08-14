@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
+import { Route as AuthenticatedContactosRouteImport } from './routes/_authenticated/contactos'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedEmpresasIndexRouteImport } from './routes/_authenticated/empresas.index'
 import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
@@ -36,6 +37,11 @@ const AuthenticatedCampoRoute = AuthenticatedCampoRouteImport.update({
   path: '/campo',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedContactosRoute = AuthenticatedContactosRouteImport.update({
+  id: '/contactos',
+  path: '/contactos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
   id: '/inicio',
   path: '/inicio',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
+  '/contactos': typeof AuthenticatedContactosRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/': typeof AuthenticatedEmpresasIndexRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
+  '/contactos': typeof AuthenticatedContactosRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas': typeof AuthenticatedEmpresasIndexRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/campo': typeof AuthenticatedCampoRoute
+  '/_authenticated/contactos': typeof AuthenticatedContactosRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/_authenticated/empresas/': typeof AuthenticatedEmpresasIndexRoute
@@ -82,15 +91,29 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/campo' | '/inicio' | '/empresas/$id' | '/empresas/'
+    | '/'
+    | '/auth'
+    | '/campo'
+    | '/contactos'
+    | '/inicio'
+    | '/empresas/$id'
+    | '/empresas/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/campo' | '/inicio' | '/empresas/$id' | '/empresas'
+  to:
+    | '/'
+    | '/auth'
+    | '/campo'
+    | '/contactos'
+    | '/inicio'
+    | '/empresas/$id'
+    | '/empresas'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/campo'
+    | '/_authenticated/contactos'
     | '/_authenticated/inicio'
     | '/_authenticated/empresas/$id'
     | '/_authenticated/empresas/'
@@ -132,6 +155,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCampoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contactos': {
+      id: '/_authenticated/contactos'
+      path: '/contactos'
+      fullPath: '/contactos'
+      preLoaderRoute: typeof AuthenticatedContactosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inicio': {
       id: '/_authenticated/inicio'
       path: '/inicio'
@@ -158,6 +188,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
+  AuthenticatedContactosRoute: typeof AuthenticatedContactosRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
   AuthenticatedEmpresasIndexRoute: typeof AuthenticatedEmpresasIndexRoute
@@ -165,6 +196,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampoRoute: AuthenticatedCampoRoute,
+  AuthenticatedContactosRoute: AuthenticatedContactosRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasIndexRoute: AuthenticatedEmpresasIndexRoute,
