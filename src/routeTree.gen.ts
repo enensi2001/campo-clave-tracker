@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedActividadesRouteImport } from './routes/_authenticated/actividades'
+import { Route as AuthenticatedAnaliticaRouteImport } from './routes/_authenticated/analitica'
 import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
 import { Route as AuthenticatedContactosRouteImport } from './routes/_authenticated/contactos'
 import { Route as AuthenticatedCotizacionesRouteImport } from './routes/_authenticated/cotizaciones'
@@ -41,6 +42,11 @@ const AuthenticatedActividadesRoute =
     path: '/actividades',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAnaliticaRoute = AuthenticatedAnaliticaRouteImport.update({
+  id: '/analitica',
+  path: '/analitica',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCampoRoute = AuthenticatedCampoRouteImport.update({
   id: '/campo',
   path: '/campo',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/actividades': typeof AuthenticatedActividadesRoute
+  '/analitica': typeof AuthenticatedAnaliticaRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/actividades': typeof AuthenticatedActividadesRoute
+  '/analitica': typeof AuthenticatedAnaliticaRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
   '/cotizaciones': typeof AuthenticatedCotizacionesRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/actividades': typeof AuthenticatedActividadesRoute
+  '/_authenticated/analitica': typeof AuthenticatedAnaliticaRoute
   '/_authenticated/campo': typeof AuthenticatedCampoRoute
   '/_authenticated/contactos': typeof AuthenticatedContactosRoute
   '/_authenticated/cotizaciones': typeof AuthenticatedCotizacionesRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/actividades'
+    | '/analitica'
     | '/campo'
     | '/contactos'
     | '/cotizaciones'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/actividades'
+    | '/analitica'
     | '/campo'
     | '/contactos'
     | '/cotizaciones'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/actividades'
+    | '/_authenticated/analitica'
     | '/_authenticated/campo'
     | '/_authenticated/contactos'
     | '/_authenticated/cotizaciones'
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       path: '/actividades'
       fullPath: '/actividades'
       preLoaderRoute: typeof AuthenticatedActividadesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/analitica': {
+      id: '/_authenticated/analitica'
+      path: '/analitica'
+      fullPath: '/analitica'
+      preLoaderRoute: typeof AuthenticatedAnaliticaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/campo': {
@@ -247,6 +266,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedActividadesRoute: typeof AuthenticatedActividadesRoute
+  AuthenticatedAnaliticaRoute: typeof AuthenticatedAnaliticaRoute
   AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
   AuthenticatedContactosRoute: typeof AuthenticatedContactosRoute
   AuthenticatedCotizacionesRoute: typeof AuthenticatedCotizacionesRoute
@@ -258,6 +278,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedActividadesRoute: AuthenticatedActividadesRoute,
+  AuthenticatedAnaliticaRoute: AuthenticatedAnaliticaRoute,
   AuthenticatedCampoRoute: AuthenticatedCampoRoute,
   AuthenticatedContactosRoute: AuthenticatedContactosRoute,
   AuthenticatedCotizacionesRoute: AuthenticatedCotizacionesRoute,
