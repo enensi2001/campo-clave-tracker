@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedEmpresasIndexRouteImport } from './routes/_authenticated/empresas.index'
+import { Route as AuthenticatedEmpresasIdRouteImport } from './routes/_authenticated/empresas.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,12 +47,18 @@ const AuthenticatedEmpresasIndexRoute =
     path: '/empresas/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedEmpresasIdRoute = AuthenticatedEmpresasIdRouteImport.update({
+  id: '/empresas/$id',
+  path: '/empresas/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/inicio': typeof AuthenticatedInicioRoute
+  '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas/': typeof AuthenticatedEmpresasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/inicio': typeof AuthenticatedInicioRoute
+  '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/empresas': typeof AuthenticatedEmpresasIndexRoute
 }
 export interface FileRoutesById {
@@ -68,13 +76,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/campo': typeof AuthenticatedCampoRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
+  '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
   '/_authenticated/empresas/': typeof AuthenticatedEmpresasIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/campo' | '/inicio' | '/empresas/'
+  fullPaths:
+    '/' | '/auth' | '/campo' | '/inicio' | '/empresas/$id' | '/empresas/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/campo' | '/inicio' | '/empresas'
+  to: '/' | '/auth' | '/campo' | '/inicio' | '/empresas/$id' | '/empresas'
   id:
     | '__root__'
     | '/'
@@ -82,6 +92,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/campo'
     | '/_authenticated/inicio'
+    | '/_authenticated/empresas/$id'
     | '/_authenticated/empresas/'
   fileRoutesById: FileRoutesById
 }
@@ -135,18 +146,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEmpresasIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/empresas/$id': {
+      id: '/_authenticated/empresas/$id'
+      path: '/empresas/$id'
+      fullPath: '/empresas/$id'
+      preLoaderRoute: typeof AuthenticatedEmpresasIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
+  AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
   AuthenticatedEmpresasIndexRoute: typeof AuthenticatedEmpresasIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampoRoute: AuthenticatedCampoRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
+  AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
   AuthenticatedEmpresasIndexRoute: AuthenticatedEmpresasIndexRoute,
 }
 

@@ -129,10 +129,10 @@ function Ficha() {
                       {c.nombre} {c.apellidos ?? ""}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {[c.puesto, c.area, c.nivel_influencia].filter(Boolean).join(" · ")}
+                      {[c.puesto, c.area, c.nivel_contacto].filter(Boolean).join(" · ")}
                     </p>
                     <p className="num text-xs text-muted-foreground">
-                      {[c.telefono, c.email].filter(Boolean).join(" · ")}
+                      {[c.telefono, c.correo].filter(Boolean).join(" · ")}
                     </p>
                   </button>
                 </li>
