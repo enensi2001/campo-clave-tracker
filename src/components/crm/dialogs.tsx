@@ -35,12 +35,16 @@ type Prefill = {
 };
 
 type Estado =
-  | { tipo: "empresa"; registro?: Empresa | null }
-  | { tipo: "contacto"; registro?: Contacto | null | undefined; prefill?: Prefill }
-  | { tipo: "visita"; registro?: Visita | null | undefined; prefill?: Prefill }
-  | { tipo: "oportunidad"; registro?: Oportunidad | null | undefined; prefill?: Prefill }
-  | { tipo: "cotizacion"; registro?: Cotizacion | null | undefined; prefill?: Prefill }
-  | { tipo: "actividad"; registro?: Actividad | null | undefined; prefill?: Prefill }
+  | { tipo: "empresa"; registro?: Empresa | null | undefined }
+  | { tipo: "contacto"; registro?: Contacto | null | undefined; prefill?: Prefill | undefined }
+  | { tipo: "visita"; registro?: Visita | null | undefined; prefill?: Prefill | undefined }
+  | {
+      tipo: "oportunidad";
+      registro?: Oportunidad | null | undefined;
+      prefill?: Prefill | undefined;
+    }
+  | { tipo: "cotizacion"; registro?: Cotizacion | null | undefined; prefill?: Prefill | undefined }
+  | { tipo: "actividad"; registro?: Actividad | null | undefined; prefill?: Prefill | undefined }
   | { tipo: "completar"; actividad: Actividad }
   | { tipo: "decision"; empresa: Empresa }
   | null;
