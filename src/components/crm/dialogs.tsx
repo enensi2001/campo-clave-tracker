@@ -28,19 +28,19 @@ import type {
 } from "@/lib/crm/data";
 
 type Prefill = {
-  empresaId?: string | null;
-  contactoId?: string | null;
-  oportunidadId?: string | null;
-  cotizacionId?: string | null;
+  empresaId?: string | null | undefined;
+  contactoId?: string | null | undefined;
+  oportunidadId?: string | null | undefined;
+  cotizacionId?: string | null | undefined;
 };
 
 type Estado =
   | { tipo: "empresa"; registro?: Empresa | null }
-  | { tipo: "contacto"; registro?: Contacto | null; prefill?: Prefill }
-  | { tipo: "visita"; registro?: Visita | null; prefill?: Prefill }
-  | { tipo: "oportunidad"; registro?: Oportunidad | null; prefill?: Prefill }
-  | { tipo: "cotizacion"; registro?: Cotizacion | null; prefill?: Prefill }
-  | { tipo: "actividad"; registro?: Actividad | null; prefill?: Prefill }
+  | { tipo: "contacto"; registro?: Contacto | null | undefined; prefill?: Prefill }
+  | { tipo: "visita"; registro?: Visita | null | undefined; prefill?: Prefill }
+  | { tipo: "oportunidad"; registro?: Oportunidad | null | undefined; prefill?: Prefill }
+  | { tipo: "cotizacion"; registro?: Cotizacion | null | undefined; prefill?: Prefill }
+  | { tipo: "actividad"; registro?: Actividad | null | undefined; prefill?: Prefill }
   | { tipo: "completar"; actividad: Actividad }
   | { tipo: "decision"; empresa: Empresa }
   | null;

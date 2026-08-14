@@ -132,7 +132,7 @@ export function FormEmpresa({
   onListo,
   onCancelar,
 }: {
-  registro?: Empresa | null;
+  registro?: Empresa | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
 }) {
@@ -398,8 +398,8 @@ export function FormContacto({
   onListo,
   onCancelar,
 }: {
-  registro?: Contacto | null;
-  empresaId?: string | null;
+  registro?: Contacto | null | undefined;
+  empresaId?: string | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
 }) {
@@ -577,8 +577,8 @@ export function FormVisita({
   onCancelar,
   onNecesidadDetectada,
 }: {
-  registro?: Visita | null;
-  empresaId?: string | null;
+  registro?: Visita | null | undefined;
+  empresaId?: string | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
   onNecesidadDetectada?: (ctx: { empresaId: string; contactoId: string | null }) => void;
@@ -831,9 +831,9 @@ export function FormOportunidad({
   onListo,
   onCancelar,
 }: {
-  registro?: Oportunidad | null;
-  empresaId?: string | null;
-  contactoId?: string | null;
+  registro?: Oportunidad | null | undefined;
+  empresaId?: string | null | undefined;
+  contactoId?: string | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
 }) {
@@ -1040,9 +1040,9 @@ export function FormCotizacion({
   onListo,
   onCancelar,
 }: {
-  registro?: Cotizacion | null;
-  empresaId?: string | null;
-  oportunidadId?: string | null;
+  registro?: Cotizacion | null | undefined;
+  empresaId?: string | null | undefined;
+  oportunidadId?: string | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
 }) {
@@ -1260,11 +1260,11 @@ export function FormActividad({
   onListo,
   onCancelar,
 }: {
-  registro?: Actividad | null;
-  empresaId?: string | null;
-  oportunidadId?: string | null;
-  cotizacionId?: string | null;
-  contactoId?: string | null;
+  registro?: Actividad | null | undefined;
+  empresaId?: string | null | undefined;
+  oportunidadId?: string | null | undefined;
+  cotizacionId?: string | null | undefined;
+  contactoId?: string | null | undefined;
   onListo: (id: string) => void;
   onCancelar: () => void;
 }) {
