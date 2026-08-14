@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 
 const IndexRoute = IndexRouteImport.update({
@@ -28,6 +29,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedCampoRoute = AuthenticatedCampoRouteImport.update({
+  id: '/campo',
+  path: '/campo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
   id: '/inicio',
   path: '/inicio',
@@ -37,11 +43,13 @@ const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/campo': typeof AuthenticatedCampoRoute
   '/inicio': typeof AuthenticatedInicioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/campo': typeof AuthenticatedCampoRoute
   '/inicio': typeof AuthenticatedInicioRoute
 }
 export interface FileRoutesById {
@@ -49,14 +57,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/campo': typeof AuthenticatedCampoRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/inicio'
+  fullPaths: '/' | '/auth' | '/campo' | '/inicio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/inicio'
-  id: '__root__' | '/' | '/_authenticated' | '/auth' | '/_authenticated/inicio'
+  to: '/' | '/auth' | '/campo' | '/inicio'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/campo'
+    | '/_authenticated/inicio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/campo': {
+      id: '/_authenticated/campo'
+      path: '/campo'
+      fullPath: '/campo'
+      preLoaderRoute: typeof AuthenticatedCampoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inicio': {
       id: '/_authenticated/inicio'
       path: '/inicio'
@@ -99,10 +121,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCampoRoute: AuthenticatedCampoRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
 }
 

@@ -40,7 +40,7 @@ function ModoCampo() {
     .filter((e) => (estado ? e.estado_comercial === estado : true))
     .filter((e) =>
       busqueda.trim()
-        ? [e.nombre, e.zona_industrial, e.colonia, e.ciudad]
+        ? [e.nombre, e.industria, e.direccion, e.ciudad]
             .filter(Boolean)
             .join(" ")
             .toLowerCase()
