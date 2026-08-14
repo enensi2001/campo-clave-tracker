@@ -176,7 +176,10 @@ export function FormEmpresa({
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valores.nombre.trim()) return toast.error("El nombre es obligatorio");
+    if (!valores.nombre.trim()) {
+      toast.error("El nombre es obligatorio");
+      return;
+    }
     setGuardando(true);
     try {
       const payload = {
@@ -420,8 +423,14 @@ export function FormContacto({
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valores.empresa_id) return toast.error("Selecciona la empresa");
-    if (!valores.nombre.trim()) return toast.error("El nombre es obligatorio");
+    if (!valores.empresa_id) {
+      toast.error("Selecciona la empresa");
+      return;
+    }
+    if (!valores.nombre.trim()) {
+      toast.error("El nombre es obligatorio");
+      return;
+    }
     setGuardando(true);
     try {
       const payload = {
@@ -611,8 +620,14 @@ export function FormVisita({
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valores.empresa_id) return toast.error("Selecciona la empresa");
-    if (!valores.resultado) return toast.error("Selecciona el resultado de la visita");
+    if (!valores.empresa_id) {
+      toast.error("Selecciona la empresa");
+      return;
+    }
+    if (!valores.resultado) {
+      toast.error("Selecciona el resultado de la visita");
+      return;
+    }
     setGuardando(true);
     try {
       const payload = {
@@ -847,8 +862,14 @@ export function FormOportunidad({
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valores.empresa_id) return toast.error("Selecciona la empresa");
-    if (!valores.nombre_proyecto.trim()) return toast.error("Escribe el nombre del proyecto");
+    if (!valores.empresa_id) {
+      toast.error("Selecciona la empresa");
+      return;
+    }
+    if (!valores.nombre_proyecto.trim()) {
+      toast.error("Escribe el nombre del proyecto");
+      return;
+    }
     setGuardando(true);
     try {
       const payload = {
@@ -1049,8 +1070,14 @@ export function FormCotizacion({
 
   const enviar = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valores.empresa_id) return toast.error("Selecciona la empresa");
-    if (!valores.folio.trim()) return toast.error("Captura el folio");
+    if (!valores.empresa_id) {
+      toast.error("Selecciona la empresa");
+      return;
+    }
+    if (!valores.folio.trim()) {
+      toast.error("Captura el folio");
+      return;
+    }
     setGuardando(true);
     try {
       const seVuelveEnviada = valores.estado === "Enviada" && registro?.estado !== "Enviada";
