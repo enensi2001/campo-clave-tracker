@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Campo, Seccion, Selector, Vacio } from "@/components/crm/ui-bits";
 import { TarjetaEmpresa } from "@/components/crm/listas";
-import { useDialogos } from "@/components/crm/dialogos-hook";
+import { useDialogos } from "@/components/crm/dialogs";
 import { useCrm } from "@/lib/crm/data";
 import { ESTADOS_COMERCIALES } from "@/lib/crm/constants";
 
