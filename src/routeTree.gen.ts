@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCampoRouteImport } from './routes/_authenticated/campo'
 import { Route as AuthenticatedContactosRouteImport } from './routes/_authenticated/contactos'
+import { Route as AuthenticatedCotizacionesRouteImport } from './routes/_authenticated/cotizaciones'
 import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedPipelineRouteImport } from './routes/_authenticated/pipeline'
 import { Route as AuthenticatedEmpresasIndexRouteImport } from './routes/_authenticated/empresas.index'
@@ -43,6 +44,12 @@ const AuthenticatedContactosRoute = AuthenticatedContactosRouteImport.update({
   path: '/contactos',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedCotizacionesRoute =
+  AuthenticatedCotizacionesRouteImport.update({
+    id: '/cotizaciones',
+    path: '/cotizaciones',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
   id: '/inicio',
   path: '/inicio',
@@ -70,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
+  '/cotizaciones': typeof AuthenticatedCotizacionesRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/pipeline': typeof AuthenticatedPipelineRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
@@ -80,6 +88,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/campo': typeof AuthenticatedCampoRoute
   '/contactos': typeof AuthenticatedContactosRoute
+  '/cotizaciones': typeof AuthenticatedCotizacionesRoute
   '/inicio': typeof AuthenticatedInicioRoute
   '/pipeline': typeof AuthenticatedPipelineRoute
   '/empresas/$id': typeof AuthenticatedEmpresasIdRoute
@@ -92,6 +101,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/campo': typeof AuthenticatedCampoRoute
   '/_authenticated/contactos': typeof AuthenticatedContactosRoute
+  '/_authenticated/cotizaciones': typeof AuthenticatedCotizacionesRoute
   '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/pipeline': typeof AuthenticatedPipelineRoute
   '/_authenticated/empresas/$id': typeof AuthenticatedEmpresasIdRoute
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/campo'
     | '/contactos'
+    | '/cotizaciones'
     | '/inicio'
     | '/pipeline'
     | '/empresas/$id'
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/campo'
     | '/contactos'
+    | '/cotizaciones'
     | '/inicio'
     | '/pipeline'
     | '/empresas/$id'
@@ -125,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/campo'
     | '/_authenticated/contactos'
+    | '/_authenticated/cotizaciones'
     | '/_authenticated/inicio'
     | '/_authenticated/pipeline'
     | '/_authenticated/empresas/$id'
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContactosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/cotizaciones': {
+      id: '/_authenticated/cotizaciones'
+      path: '/cotizaciones'
+      fullPath: '/cotizaciones'
+      preLoaderRoute: typeof AuthenticatedCotizacionesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inicio': {
       id: '/_authenticated/inicio'
       path: '/inicio'
@@ -208,6 +228,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCampoRoute: typeof AuthenticatedCampoRoute
   AuthenticatedContactosRoute: typeof AuthenticatedContactosRoute
+  AuthenticatedCotizacionesRoute: typeof AuthenticatedCotizacionesRoute
   AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedPipelineRoute: typeof AuthenticatedPipelineRoute
   AuthenticatedEmpresasIdRoute: typeof AuthenticatedEmpresasIdRoute
@@ -217,6 +238,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCampoRoute: AuthenticatedCampoRoute,
   AuthenticatedContactosRoute: AuthenticatedContactosRoute,
+  AuthenticatedCotizacionesRoute: AuthenticatedCotizacionesRoute,
   AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedPipelineRoute: AuthenticatedPipelineRoute,
   AuthenticatedEmpresasIdRoute: AuthenticatedEmpresasIdRoute,
