@@ -282,6 +282,22 @@ export function historialEmpresa(d: Datos, empresaId: string): EventoHistorial[]
       detalle: `Etapa: ${o.etapa}`,
       nivel: "info",
     });
+    if (o.etapa === "Perdida") {
+      eventos.push({
+        id: `op-${o.id}`,
+        fecha: o.fecha_perdida ?? o.updated_at.slice(0, 10),
+        tipo: "Oportunidad perdida",
+        titulo: `Oportunidad perdida: ${o.nombre_proyecto}`,
+        detalle: [
+          o.motivo_perdida ? `Motivo: ${o.motivo_perdida}` : null,
+          o.competidor_ganador ? `Ganó: ${o.competidor_ganador}` : null,
+          o.nota_perdida,
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        nivel: "danger",
+      });
+    }
   }
   for (const c of d.cotizaciones.filter((x) => x.empresa_id === empresaId)) {
     eventos.push({
@@ -359,4 +375,78 @@ export function posiblesDuplicados(
     if (web.length > 3 && w === web) return true;
     return false;
   });
+}
+
+export type Dependencia = { etiqueta: string; cantidad: number; enCascada: boolean };
+
+/** Registros relacionados que se verán afectados al eliminar. */
+export function dependencias(
+  d: Datos,
+  tabla: "empresas" | "contactos" | "visitas" | "oportunidades" | "cotizaciones" | "actividades",
+  id: string,
+): Dependencia[] {
+  const filtrar = <T extends Record<string, unknown>>(lista: T[], clave: string) =>
+    lista.filter((x) => x[clave] === id).length;
+
+  if (tabla === "empresas") {
+    return [
+      { etiqueta: "contactos", cantidad: filtrar(d.contactos, "empresa_id"), enCascada: true },
+      { etiqueta: "visitas", cantidad: filtrar(d.visitas, "empresa_id"), enCascada: true },
+      {
+        etiqueta: "oportunidades",
+        cantidad: filtrar(d.oportunidades, "empresa_id"),
+        enCascada: true,
+      },
+      {
+        etiqueta: "cotizaciones",
+        cantidad: filtrar(d.cotizaciones, "empresa_id"),
+        enCascada: true,
+      },
+      { etiqueta: "actividades", cantidad: filtrar(d.actividades, "empresa_id"), enCascada: true },
+    ].filter((x) => x.cantidad > 0);
+  }
+
+  if (tabla === "contactos") {
+    return [
+      { etiqueta: "visitas", cantidad: filtrar(d.visitas, "contacto_id"), enCascada: false },
+      {
+        etiqueta: "oportunidades",
+        cantidad: filtrar(d.oportunidades, "contacto_id"),
+        enCascada: false,
+      },
+      {
+        etiqueta: "cotizaciones",
+        cantidad: filtrar(d.cotizaciones, "contacto_id"),
+        enCascada: false,
+      },
+      { etiqueta: "actividades", cantidad: filtrar(d.actividades, "contacto_id"), enCascada: false },
+    ].filter((x) => x.cantidad > 0);
+  }
+
+  if (tabla === "oportunidades") {
+    return [
+      {
+        etiqueta: "cotizaciones",
+        cantidad: filtrar(d.cotizaciones, "oportunidad_id"),
+        enCascada: false,
+      },
+      {
+        etiqueta: "actividades",
+        cantidad: filtrar(d.actividades, "oportunidad_id"),
+        enCascada: false,
+      },
+    ].filter((x) => x.cantidad > 0);
+  }
+
+  if (tabla === "cotizaciones") {
+    return [
+      {
+        etiqueta: "actividades",
+        cantidad: filtrar(d.actividades, "cotizacion_id"),
+        enCascada: false,
+      },
+    ].filter((x) => x.cantidad > 0);
+  }
+
+  return [];
 }

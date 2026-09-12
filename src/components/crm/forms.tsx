@@ -1532,3 +1532,117 @@ export function DecisionEmpresa({
     </div>
   );
 }
+
+// ---------------------------------------------------------------- PÉRDIDA
+
+/** Captura obligatoria del motivo al marcar una oportunidad como perdida. */
+export function FormPerdida({
+  oportunidad,
+  onListo,
+  onCancelar,
+}: {
+  oportunidad: Oportunidad;
+  onListo: () => void;
+  onCancelar: () => void;
+}) {
+  const invalidar = useInvalidarCrm();
+  const [guardando, setGuardando] = useState(false);
+  const { valores, set } = useFormulario({
+    motivo_perdida: oportunidad.motivo_perdida ?? "",
+    nota_perdida: oportunidad.nota_perdida ?? "",
+    competidor_ganador: oportunidad.competidor_ganador ?? "",
+    fecha_perdida: oportunidad.fecha_perdida ?? hoyISO(),
+  });
+
+  const enviar = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!valores.motivo_perdida) {
+      toast.error("Selecciona el motivo de pérdida");
+      return;
+    }
+    if (valores.motivo_perdida === "Otro" && !valores.nota_perdida.trim()) {
+      toast.error("Describe el motivo en la nota");
+      return;
+    }
+    setGuardando(true);
+    try {
+      await marcarOportunidadPerdida(oportunidad.id, {
+        motivo_perdida: valores.motivo_perdida,
+        nota_perdida: texto(valores.nota_perdida),
+        competidor_ganador: texto(valores.competidor_ganador),
+        fecha_perdida: valores.fecha_perdida || hoyISO(),
+      });
+      invalidar();
+      toast.success("Oportunidad marcada como perdida");
+      onListo();
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  return (
+    <form onSubmit={enviar} className="space-y-4">
+      <p className="text-sm font-medium">{oportunidad.nombre_proyecto}</p>
+      <CamposPerdida valores={valores} set={set} />
+      <Acciones guardando={guardando} onCancelar={onCancelar} etiqueta="Marcar como perdida" />
+    </form>
+  );
+}
+
+function CamposPerdida({
+  valores,
+  set,
+}: {
+  valores: {
+    motivo_perdida: string;
+    nota_perdida: string;
+    competidor_ganador: string;
+    fecha_perdida: string;
+  };
+  set: (clave: never, valor: never) => void;
+}) {
+  const asignar = set as unknown as (clave: string, valor: string) => void;
+  return (
+    <div className="space-y-3 rounded-lg border bg-surface p-3">
+      <Campo label="Motivo de pérdida *">
+        <Selector
+          valor={valores.motivo_perdida || null}
+          onChange={(v) => asignar("motivo_perdida", v ?? "")}
+          opciones={MOTIVOS_PERDIDA}
+          placeholder="¿Por qué se perdió?"
+        />
+      </Campo>
+      <Campo
+        label={valores.motivo_perdida === "Otro" ? "Nota de pérdida *" : "Nota de pérdida"}
+        hint={valores.motivo_perdida === "Otro" ? "Obligatoria cuando el motivo es Otro." : undefined}
+      >
+        <Textarea
+          value={valores.nota_perdida}
+          onChange={(e) => asignar("nota_perdida", e.target.value)}
+          rows={2}
+        />
+      </Campo>
+      <div className="grid grid-cols-2 gap-3">
+        <Campo label="Competidor ganador">
+          <Input
+            className="h-11"
+            value={valores.competidor_ganador}
+            onChange={(e) => asignar("competidor_ganador", e.target.value)}
+          />
+        </Campo>
+        <Campo label="Fecha de pérdida">
+          <Input
+            className="h-11"
+            type="date"
+            value={valores.fecha_perdida}
+            onChange={(e) => asignar("fecha_perdida", e.target.value)}
+          />
+        </Campo>
+      </div>
+    </div>
+  );
+}
+
+export { CamposPerdida };

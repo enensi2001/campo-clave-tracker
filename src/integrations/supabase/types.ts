@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -328,16 +328,20 @@ export type Database = {
       oportunidades: {
         Row: {
           competencia: string | null
+          competidor_ganador: string | null
           contacto_id: string | null
           created_at: string
           empresa_id: string
           etapa: string
           fecha_estimada_cierre: string | null
+          fecha_perdida: string | null
           fecha_proxima_accion: string | null
           id: string
           moneda: string
+          motivo_perdida: string | null
           necesidad: string | null
           nombre_proyecto: string
+          nota_perdida: string | null
           notas: string | null
           owner_id: string | null
           probabilidad: number
@@ -350,16 +354,20 @@ export type Database = {
         }
         Insert: {
           competencia?: string | null
+          competidor_ganador?: string | null
           contacto_id?: string | null
           created_at?: string
           empresa_id: string
           etapa?: string
           fecha_estimada_cierre?: string | null
+          fecha_perdida?: string | null
           fecha_proxima_accion?: string | null
           id?: string
           moneda?: string
+          motivo_perdida?: string | null
           necesidad?: string | null
           nombre_proyecto: string
+          nota_perdida?: string | null
           notas?: string | null
           owner_id?: string | null
           probabilidad?: number
@@ -372,16 +380,20 @@ export type Database = {
         }
         Update: {
           competencia?: string | null
+          competidor_ganador?: string | null
           contacto_id?: string | null
           created_at?: string
           empresa_id?: string
           etapa?: string
           fecha_estimada_cierre?: string | null
+          fecha_perdida?: string | null
           fecha_proxima_accion?: string | null
           id?: string
           moneda?: string
+          motivo_perdida?: string | null
           necesidad?: string | null
           nombre_proyecto?: string
+          nota_perdida?: string | null
           notas?: string | null
           owner_id?: string | null
           probabilidad?: number
@@ -508,12 +520,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -537,11 +549,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -562,11 +574,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -587,11 +599,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -604,11 +616,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
