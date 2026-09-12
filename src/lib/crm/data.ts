@@ -174,3 +174,49 @@ export function useInvalidarCrm() {
   const qc = useQueryClient();
   return () => invalidarTodo(qc);
 }
+
+/** Cancela los seguimientos pendientes ligados a una oportunidad (evita alertas falsas). */
+export async function cancelarSeguimientosDeOportunidad(oportunidadId: string) {
+  const { error } = await supabase
+    .from("actividades")
+    .update({ estado: "Cancelada" } as never)
+    .eq("oportunidad_id", oportunidadId)
+    .eq("estado", "Pendiente");
+  if (error) throw error;
+}
+
+export type DatosPerdida = {
+  motivo_perdida: string;
+  nota_perdida: string | null;
+  competidor_ganador: string | null;
+  fecha_perdida: string;
+};
+
+/** Marca una oportunidad como perdida y limpia sus seguimientos pendientes. */
+export async function marcarOportunidadPerdida(id: string, datos: DatosPerdida) {
+  await actualizarRegistro("oportunidades", id, {
+    etapa: "Perdida",
+    probabilidad: 0,
+    proxima_accion: null,
+    fecha_proxima_accion: null,
+    ...datos,
+  });
+  await cancelarSeguimientosDeOportunidad(id);
+}
+
+/** Los registros de demostración son los sembrados sin dueño (owner_id nulo). */
+export const esDemo = (r: { owner_id: string | null }) => r.owner_id == null;
+
+export async function eliminarDatosDemo() {
+  for (const tabla of [
+    "actividades",
+    "cotizaciones",
+    "oportunidades",
+    "visitas",
+    "contactos",
+    "empresas",
+  ] as TablaCrm[]) {
+    const { error } = await supabase.from(tabla).delete().is("owner_id", null);
+    if (error) throw error;
+  }
+}

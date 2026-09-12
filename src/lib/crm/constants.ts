@@ -218,3 +218,17 @@ export const ESTADOS_ACTIVOS: string[] = [
   "Cotización activa",
   "Cliente",
 ];
+
+/** Motivos de pérdida de una oportunidad. */
+export const MOTIVOS_PERDIDA = [
+  "Precio más alto",
+  "Ganó otro proveedor",
+  "Cliente eligió otra solución",
+  "Proyecto cancelado",
+  "Sin presupuesto",
+  "Proyecto pospuesto",
+  "No cumplimos especificación/alcance",
+  "Sin respuesta",
+  "Condiciones comerciales/tiempo de entrega",
+  "Otro",
+] as const;
