@@ -328,16 +328,20 @@ export type Database = {
       oportunidades: {
         Row: {
           competencia: string | null
+          competidor_ganador: string | null
           contacto_id: string | null
           created_at: string
           empresa_id: string
           etapa: string
           fecha_estimada_cierre: string | null
+          fecha_perdida: string | null
           fecha_proxima_accion: string | null
           id: string
           moneda: string
+          motivo_perdida: string | null
           necesidad: string | null
           nombre_proyecto: string
+          nota_perdida: string | null
           notas: string | null
           owner_id: string | null
           probabilidad: number
@@ -350,16 +354,20 @@ export type Database = {
         }
         Insert: {
           competencia?: string | null
+          competidor_ganador?: string | null
           contacto_id?: string | null
           created_at?: string
           empresa_id: string
           etapa?: string
           fecha_estimada_cierre?: string | null
+          fecha_perdida?: string | null
           fecha_proxima_accion?: string | null
           id?: string
           moneda?: string
+          motivo_perdida?: string | null
           necesidad?: string | null
           nombre_proyecto: string
+          nota_perdida?: string | null
           notas?: string | null
           owner_id?: string | null
           probabilidad?: number
@@ -372,16 +380,20 @@ export type Database = {
         }
         Update: {
           competencia?: string | null
+          competidor_ganador?: string | null
           contacto_id?: string | null
           created_at?: string
           empresa_id?: string
           etapa?: string
           fecha_estimada_cierre?: string | null
+          fecha_perdida?: string | null
           fecha_proxima_accion?: string | null
           id?: string
           moneda?: string
+          motivo_perdida?: string | null
           necesidad?: string | null
           nombre_proyecto?: string
+          nota_perdida?: string | null
           notas?: string | null
           owner_id?: string | null
           probabilidad?: number
