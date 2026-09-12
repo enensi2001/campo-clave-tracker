@@ -282,6 +282,22 @@ export function historialEmpresa(d: Datos, empresaId: string): EventoHistorial[]
       detalle: `Etapa: ${o.etapa}`,
       nivel: "info",
     });
+    if (o.etapa === "Perdida") {
+      eventos.push({
+        id: `op-${o.id}`,
+        fecha: o.fecha_perdida ?? o.updated_at.slice(0, 10),
+        tipo: "Oportunidad perdida",
+        titulo: `Oportunidad perdida: ${o.nombre_proyecto}`,
+        detalle: [
+          o.motivo_perdida ? `Motivo: ${o.motivo_perdida}` : null,
+          o.competidor_ganador ? `Ganó: ${o.competidor_ganador}` : null,
+          o.nota_perdida,
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        nivel: "danger",
+      });
+    }
   }
   for (const c of d.cotizaciones.filter((x) => x.empresa_id === empresaId)) {
     eventos.push({
