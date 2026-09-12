@@ -1,6 +1,19 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -16,16 +29,22 @@ import {
   FormCotizacion,
   FormEmpresa,
   FormOportunidad,
+  FormPerdida,
   FormVisita,
 } from "@/components/crm/forms";
-import type {
-  Actividad,
-  Contacto,
-  Cotizacion,
-  Empresa,
-  Oportunidad,
-  Visita,
+import {
+  eliminarRegistro,
+  useCrm,
+  useInvalidarCrm,
+  type Actividad,
+  type Contacto,
+  type Cotizacion,
+  type Empresa,
+  type Oportunidad,
+  type TablaCrm,
+  type Visita,
 } from "@/lib/crm/data";
+import { dependencias } from "@/lib/crm/logic";
 
 type Prefill = {
   empresaId?: string | null | undefined;
@@ -33,6 +52,8 @@ type Prefill = {
   oportunidadId?: string | null | undefined;
   cotizacionId?: string | null | undefined;
 };
+
+export type Objetivo = { tabla: TablaCrm; id: string; nombre: string };
 
 type Estado =
   | { tipo: "empresa"; registro?: Empresa | null | undefined }
@@ -47,6 +68,7 @@ type Estado =
   | { tipo: "actividad"; registro?: Actividad | null | undefined; prefill?: Prefill | undefined }
   | { tipo: "completar"; actividad: Actividad }
   | { tipo: "decision"; empresa: Empresa }
+  | { tipo: "perdida"; oportunidad: Oportunidad }
   | null;
 
 type Api = {
@@ -58,6 +80,8 @@ type Api = {
   actividad: (prefill?: Prefill, registro?: Actividad | null) => void;
   completar: (actividad: Actividad) => void;
   decision: (empresa: Empresa) => void;
+  perdida: (oportunidad: Oportunidad) => void;
+  eliminar: (objetivo: Objetivo) => void;
 };
 
 const Contexto = createContext<Api | null>(null);
@@ -66,6 +90,38 @@ export function useDialogos(): Api {
   const api = useContext(Contexto);
   if (!api) throw new Error("useDialogos requiere DialogosProvider");
   return api;
+}
+
+/** Botón de eliminación reutilizable para tarjetas, filas y fichas. */
+export function BotonEliminar({
+  tabla,
+  id,
+  nombre,
+  className,
+  variant = "outline",
+  etiqueta,
+}: {
+  tabla: TablaCrm;
+  id: string;
+  nombre: string;
+  className?: string;
+  variant?: "outline" | "ghost" | "destructive";
+  etiqueta?: string;
+}) {
+  const dialogos = useDialogos();
+  return (
+    <Button
+      type="button"
+      size="sm"
+      variant={variant}
+      className={className ?? "h-9"}
+      onClick={() => dialogos.eliminar({ tabla, id, nombre })}
+      aria-label={`Eliminar ${nombre}`}
+    >
+      <Trash2 className="size-4" />
+      {etiqueta ?? "Eliminar"}
+    </Button>
+  );
 }
 
 const TITULOS: Record<string, { titulo: string; descripcion: string }> = {
@@ -81,16 +137,36 @@ const TITULOS: Record<string, { titulo: string; descripcion: string }> = {
   },
   cotizacion: { titulo: "Cotización", descripcion: "Documento comercial y su seguimiento." },
   actividad: { titulo: "Actividad", descripcion: "Agenda comercial." },
-  completar: { titulo: "Completar actividad", descripcion: "Registra el resultado y decide qué sigue." },
+  completar: {
+    titulo: "Completar actividad",
+    descripcion: "Registra el resultado y decide qué sigue.",
+  },
   decision: {
     titulo: "¿Qué sigue con esta empresa?",
     descripcion: "Toda empresa activa necesita una próxima acción o una decisión explícita.",
   },
+  perdida: {
+    titulo: "Marcar oportunidad como perdida",
+    descripcion: "Registra el motivo para no perder el aprendizaje comercial.",
+  },
+};
+
+const ETIQUETA_TABLA: Record<TablaCrm, string> = {
+  empresas: "empresa",
+  contactos: "contacto",
+  visitas: "visita",
+  oportunidades: "oportunidad",
+  cotizaciones: "cotización",
+  actividades: "actividad",
 };
 
 export function DialogosProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<Estado>(null);
+  const [objetivo, setObjetivo] = useState<Objetivo | null>(null);
+  const [eliminando, setEliminando] = useState(false);
   const navigate = useNavigate();
+  const datos = useCrm();
+  const invalidar = useInvalidarCrm();
 
   const api = useMemo<Api>(
     () => ({
@@ -102,12 +178,75 @@ export function DialogosProvider({ children }: { children: ReactNode }) {
       actividad: (prefill, registro) => setEstado({ tipo: "actividad", prefill, registro }),
       completar: (actividad) => setEstado({ tipo: "completar", actividad }),
       decision: (empresa) => setEstado({ tipo: "decision", empresa }),
+      perdida: (oportunidad) => setEstado({ tipo: "perdida", oportunidad }),
+      eliminar: (obj) => setObjetivo(obj),
     }),
     [],
   );
 
   const cerrar = () => setEstado(null);
   const meta = estado ? TITULOS[estado.tipo] : undefined;
+
+  const relacionados = objetivo ? dependencias(datos, objetivo.tabla, objetivo.id) : [];
+  const cascada = relacionados.filter((r) => r.enCascada);
+  const referencias = relacionados.filter((r) => !r.enCascada);
+
+  const confirmarEliminar = async () => {
+    if (!objetivo) return;
+    setEliminando(true);
+    try {
+      await eliminarRegistro(objetivo.tabla, objetivo.id);
+      invalidar();
+      toast.success(`${objetivo.nombre} eliminado`);
+      const eraEmpresa = objetivo.tabla === "empresas";
+      setObjetivo(null);
+      setEstado(null);
+      if (eraEmpresa) void navigate({ to: "/empresas" });
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setEliminando(false);
+    }
+  };
+
+  const registroEditado: Objetivo | null = (() => {
+    if (!estado) return null;
+    if (estado.tipo === "empresa" && estado.registro)
+      return { tabla: "empresas", id: estado.registro.id, nombre: estado.registro.nombre };
+    if (estado.tipo === "contacto" && estado.registro)
+      return {
+        tabla: "contactos",
+        id: estado.registro.id,
+        nombre: `${estado.registro.nombre} ${estado.registro.apellidos ?? ""}`.trim(),
+      };
+    if (estado.tipo === "visita" && estado.registro)
+      return {
+        tabla: "visitas",
+        id: estado.registro.id,
+        nombre: `Visita del ${estado.registro.fecha}`,
+      };
+    if (estado.tipo === "oportunidad" && estado.registro)
+      return {
+        tabla: "oportunidades",
+        id: estado.registro.id,
+        nombre: estado.registro.nombre_proyecto,
+      };
+    if (estado.tipo === "cotizacion" && estado.registro)
+      return { tabla: "cotizaciones", id: estado.registro.id, nombre: estado.registro.folio };
+    if (estado.tipo === "actividad" && estado.registro)
+      return {
+        tabla: "actividades",
+        id: estado.registro.id,
+        nombre: `${estado.registro.tipo} del ${estado.registro.fecha}`,
+      };
+    if (estado.tipo === "completar")
+      return {
+        tabla: "actividades",
+        id: estado.actividad.id,
+        nombre: `${estado.actividad.tipo} del ${estado.actividad.fecha}`,
+      };
+    return null;
+  })();
 
   return (
     <Contexto.Provider value={api}>
@@ -209,8 +348,83 @@ export function DialogosProvider({ children }: { children: ReactNode }) {
               }
             />
           ) : null}
+
+          {estado?.tipo === "perdida" ? (
+            <FormPerdida oportunidad={estado.oportunidad} onCancelar={cerrar} onListo={cerrar} />
+          ) : null}
+
+          {registroEditado ? (
+            <div className="border-t pt-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 w-full text-danger-foreground"
+                onClick={() => setObjetivo(registroEditado)}
+              >
+                <Trash2 className="size-4" /> Eliminar {ETIQUETA_TABLA[registroEditado.tabla]}
+              </Button>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={objetivo != null}
+        onOpenChange={(abierto) => (abierto ? null : setObjetivo(null))}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader className="text-left">
+            <AlertDialogTitle>
+              ¿Eliminar {objetivo ? ETIQUETA_TABLA[objetivo.tabla] : ""} «{objetivo?.nombre}»?
+            </AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>Esta acción es permanente y no se puede deshacer.</p>
+                {cascada.length > 0 ? (
+                  <div>
+                    <p className="font-medium text-danger-foreground">
+                      También se eliminarán en cascada:
+                    </p>
+                    <ul className="list-disc pl-5">
+                      {cascada.map((r) => (
+                        <li key={r.etiqueta}>
+                          {r.cantidad} {r.etiqueta}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {referencias.length > 0 ? (
+                  <div>
+                    <p className="font-medium">Quedarán sin esta referencia (se conservan):</p>
+                    <ul className="list-disc pl-5">
+                      {referencias.map((r) => (
+                        <li key={r.etiqueta}>
+                          {r.cantidad} {r.etiqueta}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+                {relacionados.length === 0 ? <p>No hay registros relacionados.</p> : null}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="h-11">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              className="h-11 bg-danger text-danger-foreground hover:bg-danger/90"
+              disabled={eliminando}
+              onClick={(e) => {
+                e.preventDefault();
+                void confirmarEliminar();
+              }}
+            >
+              Eliminar definitivamente
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Contexto.Provider>
   );
 }
