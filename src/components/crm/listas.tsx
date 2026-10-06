@@ -155,6 +155,7 @@ export function TarjetaEmpresa({
         >
           <Plus className="size-4" /> Registrar visita
         </Button>
+        <BotonEliminar tabla="empresas" id={empresa.id} nombre={empresa.nombre} className="h-10" etiqueta="" />
       </div>
     </li>
   );
