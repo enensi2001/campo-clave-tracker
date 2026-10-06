@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode , useEffect} from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -183,6 +183,12 @@ export function DialogosProvider({ children }: { children: ReactNode }) {
     }),
     [],
   );
+  useEffect(() => {
+    const h = (e: Event) =>
+      setEstado({ tipo: "perdida", oportunidad: (e as CustomEvent<Oportunidad>).detail });
+    window.addEventListener("crm:perdida", h);
+    return () => window.removeEventListener("crm:perdida", h);
+  }, []);
 
   const cerrar = () => setEstado(null);
   const meta = estado ? TITULOS[estado.tipo] : undefined;

@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Chip, Metrica, Seccion, SeguimientoChip, Vacio } from "@/components/crm/ui-bits";
-import { useDialogos } from "@/components/crm/dialogs";
+import { BotonEliminar, useDialogos } from "@/components/crm/dialogs";
 import { useCrm } from "@/lib/crm/data";
 import { dinero } from "@/lib/crm/format";
 import { calcularPipeline, esOportunidadAbierta } from "@/lib/crm/logic";
@@ -89,6 +89,15 @@ function Pipeline() {
                         >
                           Cotizar
                         </Button>
+                      </div>
+                      {o.etapa === "Perdida" && o.motivo_perdida ? (
+                        <p className="mt-1 text-xs text-muted-foreground">Motivo: {o.motivo_perdida}{o.competidor_ganador ? ` · Ganó ${o.competidor_ganador}` : ""}</p>
+                      ) : null}
+                      <div className="mt-2 flex gap-2">
+                        <Button size="sm" variant="outline" className="h-9 flex-1" onClick={() => dialogos.perdida(o)}>
+                          {o.etapa === "Perdida" ? "Editar pérdida" : "Marcar como perdida"}
+                        </Button>
+                        <BotonEliminar tabla="oportunidades" id={o.id} nombre={o.nombre_proyecto} etiqueta="" />
                       </div>
                     </li>
                   );

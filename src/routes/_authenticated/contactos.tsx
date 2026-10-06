@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Seccion, Vacio } from "@/components/crm/ui-bits";
-import { useDialogos } from "@/components/crm/dialogs";
+import { BotonEliminar, useDialogos } from "@/components/crm/dialogs";
 import { useCrm } from "@/lib/crm/data";
 
 export const Route = createFileRoute("/_authenticated/contactos")({
@@ -89,6 +89,7 @@ function Contactos() {
                       >
                         Editar
                       </Button>
+                      <BotonEliminar tabla="contactos" id={c.id} nombre={`${c.nombre} ${c.apellidos ?? ""}`.trim()} />
                     </div>
                   </li>
                 );

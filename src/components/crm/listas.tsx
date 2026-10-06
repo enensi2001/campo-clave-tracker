@@ -3,7 +3,7 @@ import { Check, MapPin, Pencil, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Chip, EstadoChip, SeguimientoChip } from "@/components/crm/ui-bits";
-import { useDialogos } from "@/components/crm/dialogs";
+import { BotonEliminar, useDialogos } from "@/components/crm/dialogs";
 import { useCrm, type Actividad, type Empresa } from "@/lib/crm/data";
 import { diasDesde, fechaCorta, hora, mapsUrl } from "@/lib/crm/format";
 import { contactoPrincipal, ultimaVisita, type Semaforo } from "@/lib/crm/logic";
@@ -76,6 +76,7 @@ export function FilaActividad({ actividad }: { actividad: Actividad }) {
           >
             <Pencil className="size-4" /> Editar
           </Button>
+          <BotonEliminar tabla="actividades" id={actividad.id} nombre={actividad.objetivo || actividad.tipo} variant="ghost" etiqueta="" />
         </div>
       </div>
     </li>
