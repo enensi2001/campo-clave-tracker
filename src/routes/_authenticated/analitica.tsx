@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Campo, Metrica, Seccion, Selector } from "@/components/crm/ui-bits";
+import { SeccionExportar } from "@/components/crm/exportar-seccion";
 import { useCrm } from "@/lib/crm/data";
 import { dinero } from "@/lib/crm/format";
 import { calcularActividadPeriodo, rangoDesde } from "@/lib/crm/logic";
@@ -61,6 +62,7 @@ function Analitica() {
             <Metrica label="Valor perdido" valor={dinero(m.valorPerdido)} />
           </div>
         </Seccion>
+        <SeccionExportar />
       </Contenido>
     </>
   );

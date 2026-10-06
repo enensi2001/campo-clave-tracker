@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Chip, EstadoChip, Seccion, SeguimientoChip, Vacio } from "@/components/crm/ui-bits";
 import { FilaActividad } from "@/components/crm/listas";
-import { useDialogos } from "@/components/crm/dialogs";
+import { BotonEliminar, useDialogos } from "@/components/crm/dialogs";
 import { useCrm } from "@/lib/crm/data";
 import { dinero, fechaCorta, mapsUrl } from "@/lib/crm/format";
 import { historialEmpresa } from "@/lib/crm/logic";
@@ -54,9 +54,12 @@ function Ficha() {
         titulo={empresa.nombre}
         subtitulo={[empresa.industria, empresa.ciudad].filter(Boolean).join(" · ")}
         accion={
-          <Button size="sm" className="h-9" onClick={() => dialogos.empresa(empresa)}>
-            Editar
-          </Button>
+          <div className="flex gap-2">
+            <Button size="sm" className="h-9" onClick={() => dialogos.empresa(empresa)}>
+              Editar
+            </Button>
+            <BotonEliminar tabla="empresas" id={empresa.id} nombre={empresa.nombre} etiqueta="" />
+          </div>
         }
       />
       <Contenido>
@@ -156,7 +159,16 @@ function Ficha() {
                     <p className="text-xs text-muted-foreground">
                       {o.etapa} · {dinero(o.valor_estimado, o.moneda)} · {o.probabilidad}%
                     </p>
+                    {o.etapa === "Perdida" && o.motivo_perdida ? (
+                      <p className="text-xs text-muted-foreground">Motivo: {o.motivo_perdida}{o.competidor_ganador ? ` · Ganó ${o.competidor_ganador}` : ""}</p>
+                    ) : null}
                   </button>
+                  <div className="mt-2 flex gap-2">
+                    <Button size="sm" variant="outline" className="h-9 flex-1" onClick={() => dialogos.perdida(o)}>
+                      {o.etapa === "Perdida" ? "Editar pérdida" : "Marcar como perdida"}
+                    </Button>
+                    <BotonEliminar tabla="oportunidades" id={o.id} nombre={o.nombre_proyecto} etiqueta="" />
+                  </div>
                 </li>
               ))}
             </ul>
@@ -179,6 +191,7 @@ function Ficha() {
                       {c.estado} · {dinero(c.importe, c.moneda)} · {fechaCorta(c.fecha)}
                     </p>
                   </button>
+                  <BotonEliminar tabla="cotizaciones" id={c.id} nombre={c.folio} className="mt-2 h-9 w-full" />
                 </li>
               ))}
             </ul>

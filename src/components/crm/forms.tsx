@@ -12,6 +12,7 @@ import {
   ESTADOS_COMERCIALES,
   ESTADOS_COTIZACION,
   ETAPAS_OPORTUNIDAD,
+  MOTIVOS_PERDIDA,
   MONEDAS,
   NIVELES_CONTACTO,
   ORIGENES,
@@ -24,6 +25,7 @@ import {
 import {
   actualizarRegistro,
   crearRegistro,
+  marcarOportunidadPerdida,
   useCrm,
   useInvalidarCrm,
   type Actividad,
@@ -995,7 +997,17 @@ export function FormOportunidad({
       <Campo label="Etapa">
         <Selector
           valor={valores.etapa}
-          onChange={(v) => set("etapa", v ?? "Necesidad detectada")}
+          onChange={(v) => {
+            if (v === "Perdida" && valores.etapa !== "Perdida") {
+              if (registro) {
+                window.dispatchEvent(new CustomEvent("crm:perdida", { detail: registro }));
+              } else {
+                toast.error("Guarda la oportunidad primero y luego márcala como perdida.");
+              }
+              return;
+            }
+            set("etapa", v ?? "Necesidad detectada");
+          }}
           opciones={ETAPAS_OPORTUNIDAD}
         />
       </Campo>
@@ -1616,7 +1628,7 @@ function CamposPerdida({
       </Campo>
       <Campo
         label={valores.motivo_perdida === "Otro" ? "Nota de pérdida *" : "Nota de pérdida"}
-        hint={valores.motivo_perdida === "Otro" ? "Obligatoria cuando el motivo es Otro." : undefined}
+        {...(valores.motivo_perdida === "Otro" ? { hint: "Obligatoria cuando el motivo es Otro." } : {})}
       >
         <Textarea
           value={valores.nota_perdida}

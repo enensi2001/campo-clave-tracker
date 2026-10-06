@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Contenido, Encabezado } from "@/components/crm/app-shell";
 import { Chip, Seccion, SeguimientoChip, Vacio } from "@/components/crm/ui-bits";
-import { useDialogos } from "@/components/crm/dialogs";
+import { BotonEliminar, useDialogos } from "@/components/crm/dialogs";
 import { useCrm } from "@/lib/crm/data";
 import { dinero, fechaCorta } from "@/lib/crm/format";
 import { esCotizacionAbierta } from "@/lib/crm/logic";
@@ -56,6 +56,7 @@ function Cotizaciones() {
         >
           Editar
         </Button>
+        <BotonEliminar tabla="cotizaciones" id={c.id} nombre={c.folio} className="mt-2 h-9 w-full" />
       </li>
     );
   };
